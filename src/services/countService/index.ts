@@ -1,9 +1,11 @@
-import { of, Observable, BehaviorSubject, Subject } from 'rxjs';
-
+import { BehaviorSubject } from 'rxjs';
+import { counterUseCase, CounterUseCase } from '../../core/usecases/counterUsecase';
 class CountService {
     private static instance: CountService = new CountService();
 
     private counterSubject: BehaviorSubject<number> = new BehaviorSubject<number>(0);
+
+    private counterUseCase: CounterUseCase = counterUseCase;
 
     private constructor() {
 
@@ -14,13 +16,15 @@ class CountService {
     }
 
     public increment(): void {
-        let count: number = this.counterSubject.getValue() + 1;
-        this.counterSubject.next(count);
+        let count: number = this.counterSubject.getValue();
+        const valueUpdated = this.counterUseCase.increment(count)
+        this.counterSubject.next(valueUpdated);
     };
 
     public decrement(): void {
-        let count: number = this.counterSubject.getValue() - 1;
-        this.counterSubject.next(count);
+        let count: number = this.counterSubject.getValue();
+        const valueUpdated = this.counterUseCase.decrement(count)
+        this.counterSubject.next(valueUpdated);
     };
 
     public setCount(count: number): void {
